@@ -211,7 +211,7 @@ public sealed class ZadaniaLinq
 
         foreach (var res in joined)
         {
-            yield return $"{res.przedmiot}, {res.avg}";
+            yield return $"{res.przedmiot}, {res.avg:F2}";
         }
     }
 
