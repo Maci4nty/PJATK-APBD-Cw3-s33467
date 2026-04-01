@@ -4,138 +4,115 @@ namespace LinqConsoleLab.PL.Exercises;
 
 public sealed class ZadaniaLinq
 {
-    /// <summary>
-    /// Zadanie:
-    /// Wyszukaj wszystkich studentów mieszkających w Warsaw.
-    /// Zwróć numer indeksu, pełne imię i nazwisko oraz miasto.
-    ///
-    /// SQL:
-    /// SELECT NumerIndeksu, Imie, Nazwisko, Miasto
-    /// FROM Studenci
-    /// WHERE Miasto = 'Warsaw';
-    /// </summary>
     public IEnumerable<string> Zadanie01_StudenciZWarszawy()
     {
-        throw Niezaimplementowano(nameof(Zadanie01_StudenciZWarszawy));
-    }
+        var studenciZWarszawy = DaneUczelni.Studenci
+            .Where(s => s.Miasto == "Warszawa");
 
-    /// <summary>
-    /// Zadanie:
-    /// Przygotuj listę adresów e-mail wszystkich studentów.
-    /// Użyj projekcji, tak aby w wyniku nie zwracać całych obiektów.
-    ///
-    /// SQL:
-    /// SELECT Email
-    /// FROM Studenci;
-    /// </summary>
+        foreach (var student in studenciZWarszawy)
+        {
+            yield return $"{student.NumerIndeksu}, {student.Imie}, {student.Nazwisko}, {student.Miasto}";
+        }
+    }
+    
     public IEnumerable<string> Zadanie02_AdresyEmailStudentow()
     {
-        throw Niezaimplementowano(nameof(Zadanie02_AdresyEmailStudentow));
+        var emails = DaneUczelni.Studenci
+            .Select(s => s.Email);
+
+        foreach (var email in emails)
+        {
+            yield return email;
+        }
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Posortuj studentów alfabetycznie po nazwisku, a następnie po imieniu.
-    /// Zwróć numer indeksu i pełne imię i nazwisko.
-    ///
-    /// SQL:
-    /// SELECT NumerIndeksu, Imie, Nazwisko
-    /// FROM Studenci
-    /// ORDER BY Nazwisko, Imie;
-    /// </summary>
+    
     public IEnumerable<string> Zadanie03_StudenciPosortowani()
     {
-        throw Niezaimplementowano(nameof(Zadanie03_StudenciPosortowani));
+        var sortedSurnamesAndNames = DaneUczelni.Studenci
+            .OrderBy(s => s.Nazwisko)
+            .ThenBy(s => s.Imie);
+
+
+        foreach (var student in sortedSurnamesAndNames)
+        {
+            yield return $"{student.NumerIndeksu}, {student.Nazwisko}, {student.Imie}";
+        }
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Znajdź pierwszy przedmiot z kategorii Analytics.
-    /// Jeżeli taki przedmiot nie istnieje, zwróć komunikat tekstowy.
-    ///
-    /// SQL:
-    /// SELECT TOP 1 Nazwa, DataStartu
-    /// FROM Przedmioty
-    /// WHERE Kategoria = 'Analytics';
-    /// </summary>
+    
     public IEnumerable<string> Zadanie04_PierwszyPrzedmiotAnalityczny()
     {
-        throw Niezaimplementowano(nameof(Zadanie04_PierwszyPrzedmiotAnalityczny));
+        var first = DaneUczelni.Przedmioty.FirstOrDefault(f => f.Kategoria == "Analytics");
+        Console.WriteLine(first?.Kategoria ?? "Taki przedmiot nie istnieje");
+
+        if (first != null)
+        {
+            yield return $"{first.Nazwa}, {first.DataStartu}";
+        }
+        else
+        {
+            yield return "Taki przedmiot nie istnieje";
+        }
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Sprawdź, czy w danych istnieje przynajmniej jeden nieaktywny zapis.
-    /// Zwróć jedno zdanie z odpowiedzią True/False albo Tak/Nie.
-    ///
-    /// SQL:
-    /// SELECT CASE WHEN EXISTS (
-    ///     SELECT 1
-    ///     FROM Zapisy
-    ///     WHERE CzyAktywny = 0
-    /// ) THEN 1 ELSE 0 END;
-    /// </summary>
+   
     public IEnumerable<string> Zadanie05_CzyIstniejeNieaktywneZapisanie()
     {
-        throw Niezaimplementowano(nameof(Zadanie05_CzyIstniejeNieaktywneZapisanie));
+        bool istnieje = DaneUczelni.Zapisy.Any(x => x.CzyAktywny == false);
+        if (istnieje)
+        {
+            yield return "True";
+        }
+        else
+        {
+            yield return "False";
+        }
     }
-
-    /// <summary>
-    /// Zadanie:
-    /// Sprawdź, czy każdy prowadzący ma uzupełnioną nazwę katedry.
-    /// Warto użyć metody, która weryfikuje warunek dla całej kolekcji.
-    ///
-    /// SQL:
-    /// SELECT CASE WHEN COUNT(*) = COUNT(Katedra)
-    /// THEN 1 ELSE 0 END
-    /// FROM Prowadzacy;
-    /// </summary>
+    
     public IEnumerable<string> Zadanie06_CzyWszyscyProwadzacyMajaKatedre()
     {
-        throw Niezaimplementowano(nameof(Zadanie06_CzyWszyscyProwadzacyMajaKatedre));
+        bool wszyscy = DaneUczelni.Prowadzacy.All(x => !string.IsNullOrWhiteSpace(x.Katedra));
+
+        if (wszyscy)
+        {
+            yield return "True";
+        }
+        else
+        {
+            yield return "False";
+        }
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Policz, ile aktywnych zapisów znajduje się w systemie.
-    ///
-    /// SQL:
-    /// SELECT COUNT(*)
-    /// FROM Zapisy
-    /// WHERE CzyAktywny = 1;
-    /// </summary>
+    
     public IEnumerable<string> Zadanie07_LiczbaAktywnychZapisow()
     {
-        throw Niezaimplementowano(nameof(Zadanie07_LiczbaAktywnychZapisow));
+        var total = DaneUczelni.Zapisy.Count(z => z.CzyAktywny);
+        yield return $"{total}";
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Pobierz listę unikalnych miast studentów i posortuj ją rosnąco.
-    ///
-    /// SQL:
-    /// SELECT DISTINCT Miasto
-    /// FROM Studenci
-    /// ORDER BY Miasto;
-    /// </summary>
+    
     public IEnumerable<string> Zadanie08_UnikalneMiastaStudentow()
     {
-        throw Niezaimplementowano(nameof(Zadanie08_UnikalneMiastaStudentow));
-    }
+        var unique = DaneUczelni.Studenci
+            .Select(s => s.Miasto)
+            .Distinct()
+            .OrderBy(m => m);
 
-    /// <summary>
-    /// Zadanie:
-    /// Zwróć trzy najnowsze zapisy na przedmioty.
-    /// W wyniku pokaż datę zapisu, identyfikator studenta i identyfikator przedmiotu.
-    ///
-    /// SQL:
-    /// SELECT TOP 3 DataZapisu, StudentId, PrzedmiotId
-    /// FROM Zapisy
-    /// ORDER BY DataZapisu DESC;
-    /// </summary>
+        foreach (var town in unique)
+            yield return town;
+    }
+    
     public IEnumerable<string> Zadanie09_TrzyNajnowszeZapisy()
     {
-        throw Niezaimplementowano(nameof(Zadanie09_TrzyNajnowszeZapisy));
+        var zapisy = DaneUczelni.Zapisy
+            .OrderByDescending(z => z.DataZapisu)
+            .Take(3);
+        
+        foreach (var zap in zapisy)
+        {
+            yield return $"{zap.DataZapisu}, {zap.StudentId}, {zap.PrzedmiotId}";
+        }
     }
 
     /// <summary>
@@ -151,7 +128,15 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie10_DrugaStronaPrzedmiotow()
     {
-        throw Niezaimplementowano(nameof(Zadanie10_DrugaStronaPrzedmiotow));
+        var przedmioty = DaneUczelni.Przedmioty
+            .OrderBy(p => p.Nazwa)
+            .Skip(2)
+            .Take(2);
+
+        foreach (var przedmiot in przedmioty)
+        {
+            yield return $"{przedmiot.Nazwa}, {przedmiot.Kategoria}";
+        }
     }
 
     /// <summary>
